@@ -38,7 +38,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const users = JSON.parse(localStorage.getItem("users") || "[]");
 
     if (users.find((u: any) => u.email === email)) {
-      return false;
+      throw new Error("User already exists with this email");
+      // return false;
     }
 
     const newUser = {
