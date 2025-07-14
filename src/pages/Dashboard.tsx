@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Plus, Trash2 } from "lucide-react";
 
 const transactions = [
   {
@@ -40,10 +40,10 @@ export default function Dashboard() {
   return (
     <>
       <div className="flex w-full">
-        <div className="flex-auto xl:px-0 w-full mx-auto border sm:px-6 md:px-12 lg:px-16 xl:max-w-5xl">
+        <div className="flex-auto xl:px-0 w-full mx-auto border sm:px-4 md:px-8 lg:px-16 xl:max-w-5xl">
           <NavBar />
 
-          <main className="p-4 ">
+          <main className="p-4 lg:px-0 ">
             {/* calculated grid */}
             <div className="grid grid-cols-3 gap-2">
               <div className="flex flex-col gap-2 border-2 border-b-green-600 p-4 rounded-lg">
@@ -59,12 +59,22 @@ export default function Dashboard() {
             {/* Add more dashboard content here */}
 
             {/* data table */}
-            <div className=" mt-8 ">
-              <h2 className="text-base my-2 ml-2 font-semibold md:text-xl">
-                Your Transactions
-              </h2>
+            <div className=" mt-8 flex flex-col space-y-4">
+              <div className="flex justify-between items-center">
+                <h2 className="text-lg ml-2 font-semibold md:text-xl">
+                  Your Transactions
+                </h2>
+                <Button
+                  onClick={() => console.log("Add data")}
+                  className="flex items-center gap-2"
+                  size={"sm"}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Transaction
+                </Button>
+              </div>
               <Filters />
-              <div className="mt-4  overflow-x-auto">
+              <div className=" overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
