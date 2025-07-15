@@ -141,6 +141,7 @@ export default function TransactionForm({
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
                     <Input
+                      min={1}
                       type="number"
                       placeholder="Amount"
                       {...field}

@@ -286,22 +286,3 @@ export default function Dashboard() {
     </>
   );
 }
-
-{
-  /* function Summary({ type }: { type: "Income" | "Expense" }) {
-  const [total, setTotal] = useState(0);
-  const { getSummary } = useData();
-
-  if (type === "Income") {
-    setTotal(getSummary("Income"));
-  }
-  if (type === "Expense") {
-    setTotal(getSummary("Expense"));
-  }
-  return (
-    <div className={`flex flex-col gap-2 border-2  p-4 rounded-lg ${type === "Expense" ? "border-b-red-600" : "border-b-green-600"}`}>
-      <h2>Total {type}</h2> <p>Nrs. {total}</p>
-    </div>
-  );
-} */
-}
