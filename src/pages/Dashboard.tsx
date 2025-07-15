@@ -2,6 +2,7 @@ import Filters from "@/components/Filters";
 import NavBar from "@/components/NavBar";
 import Summary from "@/components/Summary";
 import TransactionForm from "@/components/TransactionForm";
+import { AlertModal } from "@/components/ui/alert-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,14 +61,14 @@ export type Transaction = {
 
 export default function Dashboard() {
   const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
   };
 
-  const { deleteTransaction, transactions, getFilteredTransactions } =
-    useData();
+  const { deleteTransaction, getFilteredTransactions } = useData();
 
   const handleDeleteTransaction = (id: string) => {
     try {
@@ -85,8 +86,7 @@ export default function Dashboard() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
 
-  //   filter function
-
+  //   filtered transactions also sorted by date
   const filteredTransactions = getFilteredTransactions({
     search: searchTerm,
     type:
@@ -139,6 +139,8 @@ export default function Dashboard() {
                   Add Transaction
                 </Button>
               </div>
+
+              {/* filter component */}
               <Filters
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
@@ -223,9 +225,10 @@ export default function Dashboard() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() =>
-                                  handleDeleteTransaction(transaction.id)
-                                }
+                                onClick={() => {
+                                  setSelectedTransaction(transaction);
+                                  setShowDeleteModal(true);
+                                }}
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
@@ -283,6 +286,28 @@ export default function Dashboard() {
           transactionId={
             selectedTransaction ? selectedTransaction.id : undefined
           }
+        />
+      )}
+      {showDeleteModal && (
+        <AlertModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={() => {
+            try {
+              if (selectedTransaction) {
+                handleDeleteTransaction(selectedTransaction.id);
+              }
+              setShowDeleteModal(false);
+            } catch (error) {
+              //   console.error("Error deleting transaction:", error);
+              toast.error(
+                error instanceof Error
+                  ? error.message
+                  : "An unexpected error occurred."
+              );
+            }
+          }}
+          description="Are you sure you want to delete this transaction? Once deleted, it cannot be recovered."
         />
       )}
     </>
