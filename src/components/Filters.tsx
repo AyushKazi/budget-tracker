@@ -12,9 +12,22 @@ import { useState } from "react";
 
 const ITEMS_PER_PAGE = 5;
 
-const categories = ["Income", "Expense"];
+export const categories = [
+  {
+    id: "1",
+    name: "Income",
+  },
+  { id: "2", name: "Expense" },
+];
 
-const reoccurings = ["Monthly", "Weekly", "One-time"];
+export const reoccurings = [
+  {
+    id: "1",
+    name: "Monthly",
+  },
+  { id: "2", name: "Weekly" },
+  { id: "3", name: "Daily" },
+];
 
 export default function Filters() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,8 +75,8 @@ export default function Filters() {
           </SelectTrigger>
           <SelectContent>
             {categories.map((category) => (
-              <SelectItem key={category} value={category}>
-                {category}
+              <SelectItem key={category.id} value={category.name}>
+                {category.name}
               </SelectItem>
             ))}
           </SelectContent>
@@ -79,8 +92,8 @@ export default function Filters() {
           </SelectTrigger>
           <SelectContent>
             {reoccurings.map((reoccuring) => (
-              <SelectItem key={reoccuring} value={reoccuring}>
-                {reoccuring}
+              <SelectItem key={reoccuring.id} value={reoccuring.name}>
+                {reoccuring.name}
               </SelectItem>
             ))}
           </SelectContent>

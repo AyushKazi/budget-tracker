@@ -1,5 +1,6 @@
 import Filters from "@/components/Filters";
 import NavBar from "@/components/NavBar";
+import TransactionForm from "@/components/TransactionForm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,28 +12,44 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Edit, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 const transactions = [
   {
     id: "1",
+    userId: "1",
     date: "2023-10-01",
     description: "Salary",
     reoccuring: "Monthly",
-    type: "income",
+    type: "Income",
     amount: 2400,
   },
   {
     id: "2",
+    userId: "2",
     date: "2023-10-02",
     description: "Groceries",
     reoccuring: "Weekly",
-    type: "expense",
+    type: "Expense",
     amount: 600,
   },
   // Add more transactions as needed
 ];
 
+export type Transaction = {
+  id: string;
+  userId: string;
+  date: string;
+  description: string;
+  reoccuring: string;
+  type: string;
+  amount: number;
+};
+
 export default function Dashboard() {
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
   };
@@ -65,7 +82,7 @@ export default function Dashboard() {
                   Your Transactions
                 </h2>
                 <Button
-                  onClick={() => console.log("Add data")}
+                  onClick={() => setShowTransactionModal(true)}
                   className="flex items-center gap-2"
                   size={"sm"}
                 >
@@ -97,7 +114,7 @@ export default function Dashboard() {
                         <TableCell>
                           <Badge
                             variant={
-                              transaction.type === "income"
+                              transaction.type === "Income"
                                 ? "default"
                                 : "destructive"
                             }
@@ -107,12 +124,12 @@ export default function Dashboard() {
                         </TableCell>
                         <TableCell
                           className={`text-right font-medium ${
-                            transaction.type === "income"
+                            transaction.type === "Income"
                               ? "text-green-600"
                               : "text-red-600"
                           }`}
                         >
-                          {transaction.type === "income" ? "+" : "-"}
+                          {transaction.type === "Income" ? "+" : "-"}
                           {transaction.amount}
                         </TableCell>
                         <TableCell className="text-right">
@@ -120,9 +137,11 @@ export default function Dashboard() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() =>
-                                console.log("Edit", transaction.id)
-                              }
+                              onClick={() => {
+                                console.log("Edit", transaction);
+                                setSelectedTransaction(transaction);
+                                setShowTransactionModal(true);
+                              }}
                             >
                               <Edit className="h-4 w-4" />
                             </Button>
@@ -146,6 +165,16 @@ export default function Dashboard() {
           </main>
         </div>
       </div>
+      {showTransactionModal && (
+        <TransactionForm
+          isOpen={showTransactionModal}
+          onClose={() => {
+            setShowTransactionModal(false);
+            setSelectedTransaction(null);
+          }}
+          initialData={selectedTransaction ? selectedTransaction : undefined}
+        />
+      )}
     </>
   );
 }
