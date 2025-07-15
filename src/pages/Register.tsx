@@ -6,7 +6,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -62,7 +61,7 @@ export default function SignUp() {
       toast.error(
         error instanceof Error ? error.message : "An unexpected error occurred."
       );
-      console.error("Registration error:", error);
+      //   console.error("Registration error:", error);
     } finally {
       setIsLoading(false);
     }

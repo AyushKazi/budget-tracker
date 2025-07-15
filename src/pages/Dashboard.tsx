@@ -215,7 +215,7 @@ export default function Dashboard() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => {
-                                  console.log("Edit", transaction);
+                                  //   console.log("Edit", transaction);
                                   setSelectedTransaction(transaction);
                                   setShowTransactionModal(true);
                                 }}

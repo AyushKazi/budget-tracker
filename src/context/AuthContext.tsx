@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("currentUser");
-    console.log("Logged in user:", loggedInUser);
+    // console.log("Logged in user:", loggedInUser);
     if (loggedInUser) {
       setUser(JSON.parse(loggedInUser));
     }
@@ -71,6 +71,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const user = users.find(
       (u: any) => u.email === email && u.password === password
     );
+
+    if (!user) {
+      throw new Error("Invalid email or password");
+      // return false;
+    }
 
     if (user) {
       const userSession = {

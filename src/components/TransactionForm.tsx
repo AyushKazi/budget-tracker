@@ -64,7 +64,7 @@ export default function TransactionForm({
         },
   });
 
-  console.log("TransactionForm initialData:", initialData);
+  // console.log("TransactionForm initialData:", initialData);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -79,8 +79,8 @@ export default function TransactionForm({
           ...initialData,
           ...data,
           amount: data.amount.toString(),
-          userId: user?.id ?? "", // Ensure userId is always a string
-          id: transactionId ?? "", // Ensure id is included
+          userId: user?.id ?? "",
+          id: transactionId ?? "",
         };
         updateTransaction(transactionId ?? "", updatedTransaction);
         onClose();
@@ -90,19 +90,19 @@ export default function TransactionForm({
           ...data,
           amount: data.amount.toString(),
           id: Date.now().toString(),
-          userId: user?.id ?? "", // Ensure userId is always a string
+          userId: user?.id ?? "",
         };
         addTransaction(newTransaction);
         onClose();
         toast.success("Transaction added successfully!");
       }
     } catch (error) {
-      console.error("TransactionForm error:", error);
+      // console.error("TransactionForm error:", error);
       toast.error(
         error instanceof Error ? error.message : "An unexpected error occurred."
       );
     }
-    console.log("TransactionForm submitted:", data);
+    // console.log("TransactionForm submitted:", data);
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
