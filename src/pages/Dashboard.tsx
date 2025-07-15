@@ -96,6 +96,8 @@ export default function Dashboard() {
     reoccuring: selectedReoccurring,
     dateFrom: dateFrom || undefined,
     dateTo: dateTo || undefined,
+  }).sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 
   //   pagination states
