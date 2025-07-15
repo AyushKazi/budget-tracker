@@ -68,7 +68,7 @@ export default tseslint.config([
 ])
 ``` -->
 
-# Transaction Tracker App
+# Budget Tracker App
 
 A simple, full-featured budget tracking app built with React and TypeScript. Track your income and expenses, apply dynamic filters, and get real-time summaries. Built with modern UI and best practices.
 
@@ -77,13 +77,13 @@ A simple, full-featured budget tracking app built with React and TypeScript. Tra
 Clone the project
 
 ```bash
-  git clone https://link-to-project
+  git clone https://github.com/AyushKazi/budget-tracker.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd my-project
+  cd budget-tracker
 ```
 
 Install dependencies
@@ -124,6 +124,10 @@ All the user data and transactions datas are stored in local storage of the web 
 - Context API for state management
 - [Lucide Icons](https://lucide.dev/) for icons
 - [Sonner](https://sonner.emilkowal.dev/) for toast notifications
+
+## Reminder
+
+You need Node 20.19.0 or later to run this Vite version properly.
 
 ## Screenshots
 
