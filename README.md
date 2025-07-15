@@ -1,4 +1,4 @@
-# React + TypeScript + Vite
+<!-- # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -66,4 +66,70 @@ export default tseslint.config([
     },
   },
 ])
+``` -->
+
+# Transaction Tracker App
+
+A simple, full-featured budget tracking app built with React and TypeScript. Track your income and expenses, apply dynamic filters, and get real-time summaries. Built with modern UI and best practices.
+
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone https://link-to-project
 ```
+
+Go to the project directory
+
+```bash
+  cd my-project
+```
+
+Install dependencies
+
+```bash
+  npm install
+```
+
+Start the server
+
+```bash
+  npm run dev
+```
+
+## Features
+
+- ✅ User Authentication (Login/Register)
+- ✅ Add / Edit / Delete Transactions
+- ✅ Filter by:
+  - Type (Income / Expense)
+  - Reoccurrence (Daily / Weekly / Monthly / One-time)
+  - Date Range
+  - Search by Description
+- ✅ Summary Cards: Income, Expense, Total Balance
+- ✅ Pagination for long lists
+- ✅ Responsive & Accessible UI
+- ✅ Error Boundaries and Not Found Pages
+
+All the user data and transactions datas are stored in local storage of the web browser.
+
+## Tech Stack
+
+- [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/) for components
+- [React Router](https://reactrouter.com/) for routing
+- Context API for state management
+- [Lucide Icons](https://lucide.dev/) for icons
+- [Sonner](https://sonner.emilkowal.dev/) for toast notifications
+
+## Screenshots
+
+![Dashboard View](./public/dashboard.png)
+![Login Page](./public/login.png)
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
