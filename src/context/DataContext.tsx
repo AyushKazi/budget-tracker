@@ -18,10 +18,15 @@ interface DataContextType {
   updateTransaction: (id: string, updatedTransaction: Transaction) => void;
   loading: boolean;
   getFilteredTransactions: (filters: FilterOptions) => Transaction[];
+  getSummary: () => {
+    totalIncome: number;
+    totalExpense: number;
+    balance: number;
+  };
 }
 
 interface FilterOptions {
-  type?: "income" | "expense";
+  type?: "Income" | "Expense";
   reoccuring?: string;
   search?: string;
   dateFrom?: string;
@@ -84,7 +89,11 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const getFilteredTransactions = (filters: FilterOptions): Transaction[] => {
     return transactions.filter((transaction) => {
       // breaking the function if the transaction type is not equal to the user's type
-      if (filters.type && transaction.type !== filters.type) {
+      if (
+        filters.type &&
+        transaction.type.toLocaleLowerCase() !==
+          filters.type.toLocaleLowerCase()
+      ) {
         return false;
       }
 
@@ -114,6 +123,21 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const getSummary = () => {
+    const totalIncome = transactions
+      .filter((transaction) => transaction.type === "Income")
+      .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
+    const totalExpense = transactions
+      .filter((transaction) => transaction.type === "Expense")
+      .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
+
+    return {
+      totalIncome,
+      totalExpense,
+      balance: totalIncome - totalExpense,
+    };
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -123,6 +147,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         updateTransaction,
         loading,
         getFilteredTransactions,
+        getSummary,
       }}
     >
       {children}

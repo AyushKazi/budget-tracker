@@ -1,5 +1,6 @@
 import Filters from "@/components/Filters";
 import NavBar from "@/components/NavBar";
+import Summary from "@/components/Summary";
 import TransactionForm from "@/components/TransactionForm";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -89,7 +90,7 @@ export default function Dashboard() {
   const filteredTransactions = getFilteredTransactions({
     search: searchTerm,
     type:
-      selectedCategory === "income" || selectedCategory === "expense"
+      selectedCategory === "Income" || selectedCategory === "Expense"
         ? selectedCategory
         : undefined,
     reoccuring: selectedReoccurring,
@@ -116,19 +117,9 @@ export default function Dashboard() {
         <div className="flex-auto xl:px-0 w-full mx-auto  sm:px-4 md:px-8 lg:px-16 xl:max-w-5xl">
           <NavBar />
 
-          <main className="p-4 lg:px-0 ">
+          <main className="p-2 py-4 md:p-4 lg:px-0 ">
             {/* calculated grid */}
-            <div className="grid grid-cols-3 gap-2">
-              <div className="flex flex-col gap-2 border-2 border-b-green-600 p-4 rounded-lg">
-                <h2>Total Income</h2> <p>Nrs. 2400</p>
-              </div>
-              <div className="flex flex-col gap-2 border-2 border-b-red-600 p-4 rounded-lg">
-                <h2>Total Expense</h2> <p>Nrs. 2400</p>
-              </div>
-              <div className="flex flex-col gap-2 border-2 border-b-gray-400 p-4 rounded-lg">
-                <h2>Total Balance</h2> <p>Nrs. 2400</p>
-              </div>
-            </div>
+            <Summary />
             {/* Add more dashboard content here */}
 
             {/* data table */}
@@ -193,7 +184,8 @@ export default function Dashboard() {
                           <TableCell>
                             <Badge
                               variant={
-                                transaction.type === "Income"
+                                transaction.type.toLocaleLowerCase() ===
+                                "income"
                                   ? "default"
                                   : "destructive"
                               }
@@ -203,12 +195,14 @@ export default function Dashboard() {
                           </TableCell>
                           <TableCell
                             className={`text-right font-medium ${
-                              transaction.type === "Income"
+                              transaction.type.toLocaleLowerCase() === "income"
                                 ? "text-green-600"
                                 : "text-red-600"
                             }`}
                           >
-                            {transaction.type === "Income" ? "+" : "-"}
+                            {transaction.type.toLocaleLowerCase() === "income"
+                              ? "+"
+                              : "-"}
                             {transaction.amount}
                           </TableCell>
                           <TableCell className="text-right">
@@ -291,4 +285,23 @@ export default function Dashboard() {
       )}
     </>
   );
+}
+
+{
+  /* function Summary({ type }: { type: "Income" | "Expense" }) {
+  const [total, setTotal] = useState(0);
+  const { getSummary } = useData();
+
+  if (type === "Income") {
+    setTotal(getSummary("Income"));
+  }
+  if (type === "Expense") {
+    setTotal(getSummary("Expense"));
+  }
+  return (
+    <div className={`flex flex-col gap-2 border-2  p-4 rounded-lg ${type === "Expense" ? "border-b-red-600" : "border-b-green-600"}`}>
+      <h2>Total {type}</h2> <p>Nrs. {total}</p>
+    </div>
+  );
+} */
 }
