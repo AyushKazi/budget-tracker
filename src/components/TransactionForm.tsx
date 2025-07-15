@@ -26,13 +26,13 @@ import { useState } from "react";
 import { Loader } from "lucide-react";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import type { Transaction } from "@/pages/Dashboard";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   date: z.string().min(1, { message: "Date is required" }),
   description: z.string().min(1, { message: "Description is required" }),
   reoccuring: z.string().min(1, { message: "Reoccurring is required" }),
-  amount: z.number().min(0, { message: "Amount must be a positive number" }),
+  amount: z.string().min(1, { message: "Amount is required" }),
   //   type: z.enum(["income", "expense"], { message: "Type is required" }),
   type: z.string().min(1, { message: "Type is required" }),
 });
@@ -42,13 +42,15 @@ export default function TransactionForm({
   isOpen,
   onClose,
   initialData,
+  transactionId,
 }: {
   isOpen: boolean;
   onClose: () => void;
   initialData?: TransactionFormSchema;
+  transactionId?: string;
 }) {
   const { user } = useAuth();
-  const { addTransaction } = useData();
+  const { addTransaction, updateTransaction } = useData();
   const form = useForm<TransactionFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
@@ -57,7 +59,7 @@ export default function TransactionForm({
           date: "",
           description: "",
           reoccuring: "",
-          amount: 0,
+          amount: "",
           type: "",
         },
   });
@@ -69,14 +71,37 @@ export default function TransactionForm({
   const title = initialData ? "Update Transaction" : "Add Transaction";
   const action = initialData ? "Update Transaction" : "Add Transaction";
 
-  const onSubmit = (data: TransactionFormSchema) => {
-    const newTransaction = {
-      ...data,
-      id: Date.now().toString(),
-      userId: user?.id ?? "", // Ensure userId is always a string
-    };
-    // addTransaction(newTransaction);
-    // form.reset();
+  const onSubmit = async (data: TransactionFormSchema) => {
+    try {
+      setIsLoading(true);
+      if (initialData) {
+        const updatedTransaction = {
+          ...initialData,
+          ...data,
+          amount: data.amount.toString(),
+          userId: user?.id ?? "", // Ensure userId is always a string
+          id: transactionId ?? "", // Ensure id is included
+        };
+        updateTransaction(transactionId ?? "", updatedTransaction);
+        onClose();
+        toast.success("Transaction updated successfully!");
+      } else {
+        const newTransaction = {
+          ...data,
+          amount: data.amount.toString(),
+          id: Date.now().toString(),
+          userId: user?.id ?? "", // Ensure userId is always a string
+        };
+        addTransaction(newTransaction);
+        onClose();
+        toast.success("Transaction added successfully!");
+      }
+    } catch (error) {
+      console.error("TransactionForm error:", error);
+      toast.error(
+        error instanceof Error ? error.message : "An unexpected error occurred."
+      );
+    }
     console.log("TransactionForm submitted:", data);
   };
   return (
@@ -115,7 +140,12 @@ export default function TransactionForm({
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Amount" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Amount"
+                      {...field}
+                      className="[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

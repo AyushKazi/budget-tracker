@@ -5,9 +5,9 @@ export interface Transaction {
   id: string;
   userId: string;
   date: string;
-  amount: number;
+  amount: string;
   type: string;
-  reoccurring: string;
+  reoccuring: string;
   description: string;
 }
 
@@ -27,6 +27,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
+  // extracting user transactions from localStorage and assigning to state
   useEffect(() => {
     if (user) {
       const allTransactions = JSON.parse(
@@ -40,18 +41,35 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, [user]);
 
-  const addTransaction = (transaction: Transaction) => {
-    setTransactions((prev) => [...prev, transaction]);
+  // Function to save transactions to localStorage
+  const saveToLocalStorage = (updatedTransactions: Transaction[]) => {
+    const all = JSON.parse(localStorage.getItem("transactions") || "[]");
+
+    const others = all.filter((t: Transaction) => t.userId !== user?.id);
+    const merged = [...others, ...updatedTransactions];
+
+    localStorage.setItem("transactions", JSON.stringify(merged));
   };
 
-  const deleteTransaction = (id: string) => {
-    setTransactions((prev) => prev.filter((t) => t.id !== id));
+  const addTransaction = (transaction: Transaction) => {
+    const updated = [...transactions, transaction];
+    setTransactions(updated);
+    saveToLocalStorage(updated);
+  };
+
+  const deleteTransaction = async (id: string) => {
+    const updated = transactions.filter((t) => t.id !== id);
+    setTransactions(updated);
+    saveToLocalStorage(updated);
+    return true;
   };
 
   const updateTransaction = (id: string, updatedTransaction: Transaction) => {
-    setTransactions((prev) =>
-      prev.map((t) => (t.id === id ? updatedTransaction : t))
+    const updated = transactions.map((t) =>
+      t.id === id ? updatedTransaction : t
     );
+    setTransactions(updated);
+    saveToLocalStorage(updated);
   };
 
   return (

@@ -11,30 +11,41 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useData } from "@/context/DataContext";
 import { Edit, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
-const transactions = [
-  {
-    id: "1",
-    userId: "1",
-    date: "2023-10-01",
-    description: "Salary",
-    reoccuring: "Monthly",
-    type: "Income",
-    amount: 2400,
-  },
-  {
-    id: "2",
-    userId: "2",
-    date: "2023-10-02",
-    description: "Groceries",
-    reoccuring: "Weekly",
-    type: "Expense",
-    amount: 600,
-  },
-  // Add more transactions as needed
-];
+// const transactions = [
+//   {
+//     id: "1",
+//     userId: "1",
+//     date: "2023-10-01",
+//     description: "Salary",
+//     reoccuring: "Monthly",
+//     type: "Income",
+//     amount: 2400,
+//   },
+//   {
+//     id: "2",
+//     userId: "2",
+//     date: "2023-10-02",
+//     description: "Groceries",
+//     reoccuring: "Weekly",
+//     type: "Expense",
+//     amount: 600,
+//   },
+//   {
+//     id: "3",
+//     userId: "1",
+//     date: "2023-10-04",
+//     description: "Groceries",
+//     reoccuring: "One-time",
+//     type: "Expense",
+//     amount: 1000,
+//   },
+//   // Add more transactions as needed
+// ];
 
 export type Transaction = {
   id: string;
@@ -43,7 +54,7 @@ export type Transaction = {
   description: string;
   reoccuring: string;
   type: string;
-  amount: number;
+  amount: string;
 };
 
 export default function Dashboard() {
@@ -52,6 +63,17 @@ export default function Dashboard() {
     useState<Transaction | null>(null);
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
+  };
+
+  const { deleteTransaction, transactions } = useData();
+
+  const handleDeleteTransaction = (id: string) => {
+    try {
+      deleteTransaction(id);
+      toast.success("Transaction deleted successfully.");
+    } catch (error) {
+      toast.error("Failed to delete transaction.");
+    }
   };
 
   return (
@@ -92,74 +114,80 @@ export default function Dashboard() {
               </div>
               <Filters />
               <div className=" overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead className="text-right">Amount</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {transactions.map((transaction) => (
-                      <TableRow key={transaction.id}>
-                        <TableCell>{formatDate(transaction.date)}</TableCell>
-                        <TableCell className="font-medium">
-                          {transaction.description}
-                        </TableCell>
-                        <TableCell>{transaction.reoccuring}</TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={
-                              transaction.type === "Income"
-                                ? "default"
-                                : "destructive"
-                            }
-                          >
-                            {transaction.type}
-                          </Badge>
-                        </TableCell>
-                        <TableCell
-                          className={`text-right font-medium ${
-                            transaction.type === "Income"
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }`}
-                        >
-                          {transaction.type === "Income" ? "+" : "-"}
-                          {transaction.amount}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end ">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                console.log("Edit", transaction);
-                                setSelectedTransaction(transaction);
-                                setShowTransactionModal(true);
-                              }}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() =>
-                                console.log("Delete", transaction.id)
+                {transactions.length === 0 ? (
+                  <p className="text-center text-gray-500 mt-4">
+                    No transactions found.
+                  </p>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead className="text-right">Amount</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {transactions.map((transaction) => (
+                        <TableRow key={transaction.id}>
+                          <TableCell>{formatDate(transaction.date)}</TableCell>
+                          <TableCell className="font-medium">
+                            {transaction.description}
+                          </TableCell>
+                          <TableCell>{transaction.reoccuring}</TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                transaction.type === "Income"
+                                  ? "default"
+                                  : "destructive"
                               }
                             >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                              {transaction.type}
+                            </Badge>
+                          </TableCell>
+                          <TableCell
+                            className={`text-right font-medium ${
+                              transaction.type === "Income"
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }`}
+                          >
+                            {transaction.type === "Income" ? "+" : "-"}
+                            {transaction.amount}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end ">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  console.log("Edit", transaction);
+                                  setSelectedTransaction(transaction);
+                                  setShowTransactionModal(true);
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() =>
+                                  handleDeleteTransaction(transaction.id)
+                                }
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
               </div>
             </div>
           </main>
@@ -173,6 +201,9 @@ export default function Dashboard() {
             setSelectedTransaction(null);
           }}
           initialData={selectedTransaction ? selectedTransaction : undefined}
+          transactionId={
+            selectedTransaction ? selectedTransaction.id : undefined
+          }
         />
       )}
     </>
