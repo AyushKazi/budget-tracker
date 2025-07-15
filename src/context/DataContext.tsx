@@ -17,6 +17,15 @@ interface DataContextType {
   deleteTransaction: (id: string) => void;
   updateTransaction: (id: string, updatedTransaction: Transaction) => void;
   loading: boolean;
+  getFilteredTransactions: (filters: FilterOptions) => Transaction[];
+}
+
+interface FilterOptions {
+  type?: "income" | "expense";
+  reoccuring?: string;
+  search?: string;
+  dateFrom?: string;
+  dateTo?: string;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -72,6 +81,39 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     saveToLocalStorage(updated);
   };
 
+  const getFilteredTransactions = (filters: FilterOptions): Transaction[] => {
+    return transactions.filter((transaction) => {
+      // breaking the function if the transaction type is not equal to the user's type
+      if (filters.type && transaction.type !== filters.type) {
+        return false;
+      }
+
+      if (filters.reoccuring && transaction.reoccuring !== filters.reoccuring) {
+        return false;
+      }
+
+      // if description is not included, ! negates it to true and false is returned
+      if (
+        filters.search &&
+        !transaction.description
+          .toLowerCase()
+          .includes(filters.search.toLowerCase())
+      ) {
+        return false;
+      }
+
+      if (filters.dateFrom && transaction.date < filters.dateFrom) {
+        return false;
+      }
+
+      if (filters.dateTo && transaction.date > filters.dateTo) {
+        return false;
+      }
+
+      return true;
+    });
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -80,6 +122,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         deleteTransaction,
         updateTransaction,
         loading,
+        getFilteredTransactions,
       }}
     >
       {children}

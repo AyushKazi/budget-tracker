@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useData } from "@/context/DataContext";
-import { Edit, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Edit, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -65,7 +65,8 @@ export default function Dashboard() {
     return new Date(dateString).toLocaleDateString();
   };
 
-  const { deleteTransaction, transactions } = useData();
+  const { deleteTransaction, transactions, getFilteredTransactions } =
+    useData();
 
   const handleDeleteTransaction = (id: string) => {
     try {
@@ -76,10 +77,43 @@ export default function Dashboard() {
     }
   };
 
+  //   filter options
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedReoccurring, setSelectedReoccurring] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+
+  //   filter function
+
+  const filteredTransactions = getFilteredTransactions({
+    search: searchTerm,
+    type:
+      selectedCategory === "income" || selectedCategory === "expense"
+        ? selectedCategory
+        : undefined,
+    reoccuring: selectedReoccurring,
+    dateFrom: dateFrom || undefined,
+    dateTo: dateTo || undefined,
+  });
+
+  //   pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
+  const totalPages = Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE);
+  const firstIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const lastIndex = firstIndex + ITEMS_PER_PAGE;
+
+  //   pagination function
+  const paginatedTransactions = filteredTransactions.slice(
+    firstIndex,
+    lastIndex
+  );
+
   return (
     <>
       <div className="flex w-full">
-        <div className="flex-auto xl:px-0 w-full mx-auto border sm:px-4 md:px-8 lg:px-16 xl:max-w-5xl">
+        <div className="flex-auto xl:px-0 w-full mx-auto  sm:px-4 md:px-8 lg:px-16 xl:max-w-5xl">
           <NavBar />
 
           <main className="p-4 lg:px-0 ">
@@ -112,9 +146,27 @@ export default function Dashboard() {
                   Add Transaction
                 </Button>
               </div>
-              <Filters />
+              <Filters
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                selectedReoccurring={selectedReoccurring}
+                setSelectedReoccurring={setSelectedReoccurring}
+                dateFrom={dateFrom}
+                setDateFrom={setDateFrom}
+                dateTo={dateTo}
+                setDateTo={setDateTo}
+                clearFilters={() => {
+                  setSearchTerm("");
+                  setSelectedCategory("");
+                  setSelectedReoccurring("");
+                  setDateFrom("");
+                  setDateTo("");
+                }}
+              />
               <div className=" overflow-x-auto">
-                {transactions.length === 0 ? (
+                {paginatedTransactions.length === 0 ? (
                   <p className="text-center text-gray-500 mt-4">
                     No transactions found.
                   </p>
@@ -124,14 +176,14 @@ export default function Dashboard() {
                       <TableRow>
                         <TableHead>Date</TableHead>
                         <TableHead>Description</TableHead>
-                        <TableHead>Category</TableHead>
+                        <TableHead>Reoccuring</TableHead>
                         <TableHead>Type</TableHead>
                         <TableHead className="text-right">Amount</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {transactions.map((transaction) => (
+                      {paginatedTransactions.map((transaction) => (
                         <TableRow key={transaction.id}>
                           <TableCell>{formatDate(transaction.date)}</TableCell>
                           <TableCell className="font-medium">
@@ -189,6 +241,37 @@ export default function Dashboard() {
                   </Table>
                 )}
               </div>
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center mt-4  gap-4">
+                  <Button
+                    size={"sm"}
+                    variant={"secondary"}
+                    disabled={currentPage === 1}
+                    className="border border-gray-400 hover:cursor-pointer"
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Previous
+                  </Button>
+                  <span>
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <Button
+                    size={"sm"}
+                    variant={"secondary"}
+                    className="border border-gray-400 hover:cursor-pointer"
+                    disabled={currentPage === totalPages}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                  >
+                    Next
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           </main>
         </div>

@@ -8,9 +8,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Search, X } from "lucide-react";
-import { useState } from "react";
-
-const ITEMS_PER_PAGE = 5;
 
 export const categories = [
   {
@@ -27,24 +24,34 @@ export const reoccurings = [
   },
   { id: "2", name: "Weekly" },
   { id: "3", name: "Daily" },
+  { id: "4", name: "One-time" },
 ];
 
-export default function Filters() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedReoccurring, setSelectedReoccurring] = useState("");
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
-
-  const clearFilters = () => {
-    setSearchTerm("");
-    setSelectedCategory("");
-    setDateFrom("");
-    setSelectedReoccurring("");
-    setDateTo("");
-    setCurrentPage(1);
-  };
+export default function Filters({
+  searchTerm,
+  setSearchTerm,
+  selectedCategory,
+  setSelectedCategory,
+  selectedReoccurring,
+  setSelectedReoccurring,
+  dateFrom,
+  setDateFrom,
+  dateTo,
+  setDateTo,
+  clearFilters,
+}: {
+  searchTerm: string;
+  setSearchTerm: (val: string) => void;
+  selectedCategory: string;
+  setSelectedCategory: (val: string) => void;
+  selectedReoccurring: string;
+  setSelectedReoccurring: (val: string) => void;
+  dateFrom: string;
+  setDateFrom: (val: string) => void;
+  dateTo: string;
+  setDateTo: (val: string) => void;
+  clearFilters: () => void;
+}) {
   return (
     <div className="flex flex-col  sm:flex-auto gap-4 ">
       <div className="flex  w-full  gap-2">
