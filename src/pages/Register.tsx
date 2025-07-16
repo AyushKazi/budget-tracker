@@ -16,12 +16,16 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email" }),
+  email: z.string().min(1, { message: "Email is required" }).email(),
   username: z
     .string()
+    .nonempty({ message: "Username is required" })
+
     .min(3, { message: "Username must be at least 4 characters" }),
   password: z
     .string()
+    .nonempty({ message: "Password is required" })
+
     .min(6, { message: "Password must be at least 6 characters" }),
 });
 

@@ -6,7 +6,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -17,9 +16,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email" }),
+  email: z.string().min(1, { message: "Email is required" }).email(),
   password: z
     .string()
+    .nonempty({ message: "Password is required" })
     .min(6, { message: "Password must be at least 6 characters" }),
 });
 
