@@ -55,13 +55,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
 
-    const userSession = {
-      id: newUser.id,
-      email: newUser.email,
-      username: newUser.username,
-    };
-    setUser(userSession);
-    localStorage.setItem("currentUser", JSON.stringify(userSession));
+    // const userSession = {
+    //   id: newUser.id,
+    //   email: newUser.email,
+    //   username: newUser.username,
+    // };
+    // setUser(userSession);
+    // localStorage.setItem("currentUser", JSON.stringify(userSession));
 
     return true;
   };
